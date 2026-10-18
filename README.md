@@ -1,6 +1,7 @@
 # fedavg-mnist
 
-FedAvg (Federated Averaging) implemented from scratch in PyTorch and tested on MNIST.
+FedAvg (Federated Averaging) implemented from scratch in PyTorch and tested on MNIST, with a model watermarking experiment to protect model ownership.
+
 
 The training data is split across 10 simulated clients. Each round, every client trains a copy of the global model on its own data, sends back only its weights, and the server averages them. No data leaves a client.
 
@@ -40,11 +41,25 @@ The training data is split across 10 simulated clients. Each round, every client
 
 More local epochs reach higher accuracy in fewer rounds. With IID data, using only part of the clients per round gives almost the same final accuracy. Each configuration was run once (seed 0).
 
+## Model watermarking
+
+A trigger-set watermark is embedded in the CNN to prove model ownership: 100 random noise images with random labels act as a secret key. A watermarked model recognizes them, a clean model answers at chance level. The watermark is then tested against transformations needed for microcontroller deployment.
+
+| Model | Test accuracy | Watermark accuracy |
+|---|---|---|
+| Clean (no watermark) | 98.17% | 12% |
+| Watermarked | 98.65% | 98% |
+| Watermarked + int8 quantization | 98.69% | 98% |
+| Watermarked + 50% pruning | 98.69% | 93% |
+| Watermarked + fine-tuning (1 epoch, 10k images) | 98.89% | 100% |
+
+The watermark adds no accuracy loss and survives int8 quantization and 50% pruning. The fine-tuning attack used here is light; a stronger attack would be the next step to test. Trained centrally, 3 epochs, seed 0.
+
 ## Project structure
 
 ```
-src/        data split, model, local training, FedAvg, evaluation
-notebooks/  01 data exploration, 02 centralized baseline, 03 FedAvg, 04 experiments
+src/        data split, model, local training, FedAvg, evaluation, watermarking
+notebooks/  01 data exploration, 02 centralized baseline, 03 FedAvg, 04 experiments, 05 watermarking
 results/    figures and accuracies (JSON)
 ```
 
