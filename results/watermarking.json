@@ -1,0 +1,22 @@
+{
+  "clean": {
+    "test": 0.9817,
+    "watermark": 0.12
+  },
+  "watermarked": {
+    "test": 0.9865,
+    "watermark": 0.98
+  },
+  "wm + int8": {
+    "test": 0.9869,
+    "watermark": 0.98
+  },
+  "wm + pruning 50%": {
+    "test": 0.9869,
+    "watermark": 0.93
+  },
+  "wm + fine-tuning": {
+    "test": 0.9889,
+    "watermark": 1.0
+  }
+}
